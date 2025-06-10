@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { LogIn } from 'lucide-react';
+import { LogIn, Mail, KeyRound } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,12 +25,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { PageHeader } from '@/components/page-header'; // Assuming this does not exist or is not needed for auth pages.
-                                                 // If needed, ensure it's styled for centered layout.
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(1, { message: "Password is required." }), // Basic validation, can be enhanced
+  password: z.string().min(1, { message: "Password is required." }),
 });
 
 type LoginFormValues = z.infer<typeof formSchema>;
@@ -44,67 +42,66 @@ export default function LoginPage() {
     },
   });
 
-  // Placeholder for actual login logic
   const onSubmit = (values: LoginFormValues) => {
     console.log("Login form submitted:", values);
-    // Here you would typically call an authentication API
+    // Placeholder for actual login logic
   };
 
   return (
-    <>
-      {/* Optional: PageHeader if you want a title above the card */}
-      {/* <PageHeader title="Login" description="Access your ClassmateAI account." icon={LogIn} className="mb-6 text-center" /> */}
-      <Card className="w-full shadow-xl">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-headline">Welcome Back!</CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account.
-          </CardDescription>
-        </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="you@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-              <Button type="submit" className="w-full font-semibold">
-                <LogIn className="mr-2 h-5 w-5" /> Login
+    <Card className="w-full shadow-xl rounded-xl">
+      <CardHeader className="space-y-2 text-center pt-8 pb-6">
+        <CardTitle className="text-3xl font-headline">Welcome Back!</CardTitle>
+        <CardDescription>
+          Enter your credentials to access your ClassmateAI account.
+        </CardDescription>
+      </CardHeader>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-6 px-6 pb-6">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center">
+                    <Mail className="mr-2 h-4 w-4 text-muted-foreground" /> Email
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="you@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center">
+                    <KeyRound className="mr-2 h-4 w-4 text-muted-foreground" /> Password
+                  </FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4 px-6 pb-8">
+            <Button type="submit" className="w-full font-semibold text-base py-6">
+              <LogIn className="mr-2 h-5 w-5" /> Login
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Button variant="link" asChild className="p-0 h-auto font-semibold text-primary hover:underline">
+                <Link href="/signup">Sign up</Link>
               </Button>
-              <p className="text-sm text-muted-foreground">
-                Don&apos;t have an account?{" "}
-                <Button variant="link" asChild className="p-0 h-auto font-semibold">
-                  <Link href="/signup">Sign up</Link>
-                </Button>
-              </p>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
-    </>
+            </p>
+          </CardFooter>
+        </form>
+      </Form>
+    </Card>
   );
 }
