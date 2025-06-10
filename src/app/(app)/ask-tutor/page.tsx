@@ -18,6 +18,7 @@ import { LoadingSpinner } from '@/components/loading-spinner';
 import { useToast } from '@/hooks/use-toast';
 import { answerStudentQuestionAction } from '@/lib/actions';
 import type { SubmitQuestionToTeacherOutput } from "@/lib/actions";
+import type { StudentQuestionInput } from "@/ai/flows/student-question-flow";
 
 const formSchema = z.object({
   question: z.string().min(10, "Question must be at least 10 characters long."),
@@ -65,9 +66,24 @@ export default function AskTeacherPage() {
   });
   
   useEffect(() => {
-    if (formState.success && formState.data) {
+    if (formState.success && formState.data && formState.data.submittedQuestion) {
       setSubmissionMessage(formState.data.message);
       toast({ title: "Success!", description: "Your question has been submitted." });
+
+      try {
+        const existingQuestionsRaw = localStorage.getItem('studentQuestions');
+        const existingQuestions: StudentQuestionInput[] = existingQuestionsRaw ? JSON.parse(existingQuestionsRaw) : [];
+        const newQuestionWithId = { ...formState.data.submittedQuestion, id: new Date().toISOString() + Math.random().toString().substring(2,7) };
+        const newQuestions = [...existingQuestions, newQuestionWithId];
+        localStorage.setItem('studentQuestions', JSON.stringify(newQuestions));
+      } catch (e) {
+        console.error("Failed to save question to localStorage", e);
+        toast({
+          title: "Local Storage Error",
+          description: "Could not save your question locally for the demo.",
+          variant: "destructive",
+        });
+      }
       form.reset(); 
     } else if (formState.error) {
       setSubmissionMessage(null); 
@@ -185,7 +201,7 @@ export default function AskTeacherPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-foreground">{submissionMessage}</p>
-            <p className="text-sm text-muted-foreground mt-2">Your teacher will be notified. You can check back later for a response or await notification according to your class setup.</p>
+            <p className="text-sm text-muted-foreground mt-2">Your teacher will be notified. You can check back later for a response or await notification according to your class setup. (For this demo, questions are stored locally in your browser and will appear on the Teacher Dashboard).</p>
           </CardContent>
         </Card>
       )}
