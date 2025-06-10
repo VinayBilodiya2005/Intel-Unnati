@@ -1,3 +1,4 @@
+
 "use server";
 
 import { z } from "zod";
@@ -11,6 +12,12 @@ import {
   type SummarizeLessonsInput,
   type SummarizeLessonsOutput,
 } from "@/ai/flows/summarize-lessons";
+import {
+  answerStudentQuestion,
+  type StudentQuestionInput,
+  type StudentQuestionOutput,
+} from "@/ai/flows/student-question-flow";
+
 
 const PersonalizedExplanationSchema = z.object({
   topic: z.string().min(3, "Topic must be at least 3 characters long."),
@@ -21,6 +28,12 @@ const PersonalizedExplanationSchema = z.object({
 const SummarizationSchema = z.object({
   lessonContent: z.string().min(20, "Lesson content must be at least 20 characters long."),
   context: z.string().min(10, "Class context must be at least 10 characters long."),
+});
+
+const StudentQuestionSchema = z.object({
+  question: z.string().min(10, "Question must be at least 10 characters long."),
+  topicContext: z.string().optional(),
+  studentProfile: z.string().optional(),
 });
 
 interface ActionResult<T> {
@@ -78,6 +91,36 @@ export async function summarizeLessonAction(
   } catch (error) {
     console.error("summarizeLessonAction error:", error);
     const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred while summarizing the lesson.";
+    return { success: false, error: errorMessage };
+  }
+}
+
+export async function answerStudentQuestionAction(
+  prevState: any,
+  formData: FormData
+): Promise<ActionResult<StudentQuestionOutput>> {
+  const rawFormData = Object.fromEntries(formData.entries());
+  const validatedFields = StudentQuestionSchema.safeParse(rawFormData);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      fieldErrors: validatedFields.error.flatten().fieldErrors,
+      error: "Invalid input. Please check the fields.",
+    };
+  }
+
+  try {
+    const input: StudentQuestionInput = {
+        question: validatedFields.data.question,
+        topicContext: validatedFields.data.topicContext || undefined,
+        studentProfile: validatedFields.data.studentProfile || undefined,
+    };
+    const result = await answerStudentQuestion(input);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("answerStudentQuestionAction error:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred while answering the question.";
     return { success: false, error: errorMessage };
   }
 }
