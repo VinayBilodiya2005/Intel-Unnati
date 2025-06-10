@@ -17,7 +17,7 @@ import { PageHeader } from '@/components/page-header';
 import { LoadingSpinner } from '@/components/loading-spinner';
 import { useToast } from '@/hooks/use-toast';
 import { answerStudentQuestionAction } from '@/lib/actions';
-import type { SubmitQuestionToTeacherOutput } from "@/lib/actions"; // Updated import
+import type { SubmitQuestionToTeacherOutput } from "@/lib/actions";
 
 const formSchema = z.object({
   question: z.string().min(10, "Question must be at least 10 characters long."),
@@ -70,7 +70,7 @@ export default function AskTeacherPage() {
       toast({ title: "Success!", description: "Your question has been submitted." });
       form.reset(); 
     } else if (formState.error) {
-      setSubmissionMessage(null); // Clear any previous success message
+      setSubmissionMessage(null); 
       toast({
         title: "Error Submitting Question",
         description: formState.error,
@@ -176,9 +176,9 @@ export default function AskTeacherPage() {
       </Card>
 
       {submissionMessage && (
-        <Card className="mt-8 shadow-lg border-green-500">
+        <Card className="mt-8 shadow-lg border-green-500 bg-green-50 dark:bg-green-900/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline text-green-700">
+            <CardTitle className="font-headline flex items-center gap-2 text-green-700 dark:text-green-400">
               <CheckCircle2 className="h-6 w-6" />
               Question Submitted!
             </CardTitle>
