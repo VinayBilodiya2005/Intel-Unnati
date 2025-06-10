@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useEffect, useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -45,7 +45,7 @@ function SubmitButton() {
 }
 
 export default function PersonalizedTutoringPage() {
-  const [formState, dispatchFormAction] = useFormState(generateExplanationAction, initialState);
+  const [formState, dispatchFormAction] = useActionState(generateExplanationAction, initialState);
   const [aiResponse, setAiResponse] = useState<GeneratePersonalizedExplanationOutput | null>(null);
   const { toast } = useToast();
 
