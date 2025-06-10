@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { BookOpen, GraduationCap, Text, HelpCircle } from 'lucide-react';
+import { BookOpen, GraduationCap, Text, HelpCircle, ClipboardList } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -62,11 +62,23 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
               <SidebarMenuButton
                 asChild
                 isActive={pathname === '/ask-tutor'}
-                tooltip="Ask Your AI Tutor"
+                tooltip="Ask Your Teacher"
               >
                 <Link href="/ask-tutor">
                   <HelpCircle />
-                   <span className={cn("group-data-[collapsible=icon]:hidden")}>Ask Your AI Tutor</span>
+                   <span className={cn("group-data-[collapsible=icon]:hidden")}>Ask Your Teacher</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/teacher-dashboard'}
+                tooltip="Teacher Dashboard"
+              >
+                <Link href="/teacher-dashboard">
+                  <ClipboardList />
+                   <span className={cn("group-data-[collapsible=icon]:hidden")}>Teacher Dashboard</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

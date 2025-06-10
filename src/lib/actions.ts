@@ -12,10 +12,11 @@ import {
   type SummarizeLessonsInput,
   type SummarizeLessonsOutput,
 } from "@/ai/flows/summarize-lessons";
+// StudentQuestionInput and StudentQuestionOutput are still imported if the flow is used elsewhere
+// or if parts of the schema are reused.
 import {
-  answerStudentQuestion,
   type StudentQuestionInput,
-  type StudentQuestionOutput,
+  // type StudentQuestionOutput, // No longer directly returning AI output
 } from "@/ai/flows/student-question-flow";
 
 
@@ -35,6 +36,12 @@ const StudentQuestionSchema = z.object({
   topicContext: z.string().optional(),
   studentProfile: z.string().optional(),
 });
+
+// New return type for submitting a question to a teacher
+export interface SubmitQuestionToTeacherOutput {
+  message: string;
+  submittedQuestion: StudentQuestionInput;
+}
 
 interface ActionResult<T> {
   success: boolean;
@@ -98,7 +105,7 @@ export async function summarizeLessonAction(
 export async function answerStudentQuestionAction(
   prevState: any,
   formData: FormData
-): Promise<ActionResult<StudentQuestionOutput>> {
+): Promise<ActionResult<SubmitQuestionToTeacherOutput>> {
   const rawFormData = Object.fromEntries(formData.entries());
   const validatedFields = StudentQuestionSchema.safeParse(rawFormData);
 
@@ -111,16 +118,29 @@ export async function answerStudentQuestionAction(
   }
 
   try {
+    // In a real scenario, this is where you'd save the question to a database
+    // for a teacher to review. For now, we'll just simulate success.
     const input: StudentQuestionInput = {
         question: validatedFields.data.question,
         topicContext: validatedFields.data.topicContext || undefined,
         studentProfile: validatedFields.data.studentProfile || undefined,
     };
-    const result = await answerStudentQuestion(input);
-    return { success: true, data: result };
+    
+    // The AI flow `answerStudentQuestion` is NOT called here directly for immediate response.
+    // This action now conceptually submits the question for a human teacher.
+    
+    console.log("Question submitted for teacher:", input); // Placeholder for DB operation
+
+    return { 
+      success: true, 
+      data: {
+        message: "Your question has been successfully submitted to your teacher.",
+        submittedQuestion: input,
+      } 
+    };
   } catch (error) {
-    console.error("answerStudentQuestionAction error:", error);
-    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred while answering the question.";
+    console.error("answerStudentQuestionAction error (now submitQuestionToTeacher):", error);
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred while submitting your question.";
     return { success: false, error: errorMessage };
   }
 }
