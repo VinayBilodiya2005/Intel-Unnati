@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect, useState, useActionState } from 'react';
+import { useEffect, useState, useActionState, startTransition } from 'react';
 import { useFormStatus } from 'react-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -91,7 +92,9 @@ export default function PersonalizedTutoringPage() {
       formData.append(key, String(value));
     });
     setAiResponse(null); // Clear previous response
-    dispatchFormAction(formData);
+    startTransition(() => {
+      dispatchFormAction(formData);
+    });
   };
 
   return (
