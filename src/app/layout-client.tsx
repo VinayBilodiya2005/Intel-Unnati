@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { BookOpen, GraduationCap, Text, HelpCircle, ClipboardList } from 'lucide-react';
+import { BookOpen, GraduationCap, Text, HelpCircle, ClipboardList, ScanLine } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -55,6 +55,18 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                 <Link href="/summarization">
                   <Text />
                    <span className={cn("group-data-[collapsible=icon]:hidden")}>Summarization Tool</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/image-analyzer'}
+                tooltip="Image Analyzer"
+              >
+                <Link href="/image-analyzer">
+                  <ScanLine />
+                   <span className={cn("group-data-[collapsible=icon]:hidden")}>Image Analyzer</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

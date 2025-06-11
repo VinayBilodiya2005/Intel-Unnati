@@ -12,12 +12,14 @@ import {
   type SummarizeLessonsInput,
   type SummarizeLessonsOutput,
 } from "@/ai/flows/summarize-lessons";
-// StudentQuestionInput and StudentQuestionOutput are still imported if the flow is used elsewhere
-// or if parts of the schema are reused.
 import {
   type StudentQuestionInput,
-  // type StudentQuestionOutput, // No longer directly returning AI output
 } from "@/ai/flows/student-question-flow";
+import {
+  describeImage,
+  type DescribeImageInput,
+  type DescribeImageOutput,
+} from "@/ai/flows/describe-image-flow";
 
 
 const PersonalizedExplanationSchema = z.object({
@@ -37,7 +39,11 @@ const StudentQuestionSchema = z.object({
   studentProfile: z.string().optional(),
 });
 
-// New return type for submitting a question to a teacher
+const DescribeImageSchema = z.object({
+  photoDataUri: z.string().startsWith("data:image/", { message: "Invalid image data URI." }),
+});
+
+
 export interface SubmitQuestionToTeacherOutput {
   message: string;
   submittedQuestion: StudentQuestionInput;
@@ -118,18 +124,13 @@ export async function answerStudentQuestionAction(
   }
 
   try {
-    // In a real scenario, this is where you'd save the question to a database
-    // for a teacher to review. For now, we'll just simulate success.
     const input: StudentQuestionInput = {
         question: validatedFields.data.question,
         topicContext: validatedFields.data.topicContext || undefined,
         studentProfile: validatedFields.data.studentProfile || undefined,
     };
     
-    // The AI flow `answerStudentQuestion` is NOT called here directly for immediate response.
-    // This action now conceptually submits the question for a human teacher.
-    
-    console.log("Question submitted for teacher:", input); // Placeholder for DB operation
+    console.log("Question submitted for teacher:", input);
 
     return { 
       success: true, 
@@ -141,6 +142,32 @@ export async function answerStudentQuestionAction(
   } catch (error) {
     console.error("answerStudentQuestionAction error (now submitQuestionToTeacher):", error);
     const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred while submitting your question.";
+    return { success: false, error: errorMessage };
+  }
+}
+
+export async function describeImageAction(
+  prevState: any,
+  formData: FormData
+): Promise<ActionResult<DescribeImageOutput>> {
+  const rawFormData = Object.fromEntries(formData.entries());
+  const validatedFields = DescribeImageSchema.safeParse(rawFormData);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      fieldErrors: validatedFields.error.flatten().fieldErrors,
+      error: "Invalid input. Please ensure you've selected a valid image.",
+    };
+  }
+  
+  try {
+    const input: DescribeImageInput = validatedFields.data;
+    const result = await describeImage(input);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("describeImageAction error:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred while describing the image.";
     return { success: false, error: errorMessage };
   }
 }
