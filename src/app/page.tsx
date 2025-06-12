@@ -17,12 +17,12 @@ export default function HomePage() {
 
       <div className="mb-16 rounded-lg overflow-hidden shadow-2xl">
         <Image
-          src="https://placehold.co/800x500.png"
+          src="https://placehold.co/1000x600.png"
           alt="Interactive learning platform demonstration"
-          width={800}
-          height={500}
+          width={1000}
+          height={600}
           className="object-cover"
-          data-ai-hint="interactive learning platform"
+          data-ai-hint="modern e-learning abstract"
           priority
         />
       </div>
