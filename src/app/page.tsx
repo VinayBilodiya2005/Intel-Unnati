@@ -17,8 +17,8 @@ export default function HomePage() {
 
       <div className="mb-16 rounded-lg overflow-hidden shadow-2xl">
         <Image
-          src="https://placehold.co/1000x600.png"
-          alt="Interactive learning platform demonstration"
+          src="/Student using a VR headset in the classroom.webp"
+          alt="Student using a VR headset in a classroom setting"
           width={1000}
           height={600}
           className="object-cover"
