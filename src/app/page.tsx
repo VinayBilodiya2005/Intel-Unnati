@@ -22,7 +22,7 @@ export default function HomePage() {
           width={1000}
           height={600}
           className="object-cover"
-          data-ai-hint="modern e-learning abstract"
+          data-ai-hint="student VR classroom"
           priority
         />
       </div>
