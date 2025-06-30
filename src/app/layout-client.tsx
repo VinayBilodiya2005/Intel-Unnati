@@ -2,9 +2,10 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { BookOpen, GraduationCap, Text, HelpCircle, ClipboardList, ScanLine } from 'lucide-react';
+import { BookOpen, Text, HelpCircle, ClipboardList, ScanLine } from 'lucide-react';
 
 import {
   SidebarProvider,
@@ -28,7 +29,12 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
       <Sidebar collapsible="icon" variant="sidebar" side="left">
         <SidebarHeader className="p-4">
           <Link href="/" className="flex items-center gap-2">
-            <GraduationCap className="h-8 w-8 text-primary" />
+            <Image
+              src="/logo.png"
+              alt="ClassmateAI Logo"
+              width={32}
+              height={32}
+            />
             <h1 className="text-2xl font-headline font-semibold text-primary">ClassmateAI</h1>
           </Link>
         </SidebarHeader>
