@@ -5,6 +5,10 @@ import ClientLayout from './layout-client'; // Import the new ClientLayout
 export const metadata: Metadata = {
   title: 'ClassmateAI',
   description: 'AI-Powered Interactive Learning Assistant',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({
